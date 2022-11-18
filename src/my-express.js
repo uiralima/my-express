@@ -1,16 +1,16 @@
 import http from "http";
-import requestUtils from "./request-extractor.js";
+import requestUtils from "./request-utils.js";
+import responseUtils from "./response-utils.js";
 import { urlRouterFactory, methodRouterFactory } from "./router.js";
 
 let orderControl = 0;
 const app = {};
 const middlewares = new Map();
 
-function getMiddlewares(req) {
+function getMiddlewares(reqUtils) {
   const result = [];
-  const reqData = requestUtils(req);
-  const methodRouter = methodRouterFactory(reqData.method);
-  const urlRouter = urlRouterFactory(reqData.url);
+  const methodRouter = methodRouterFactory(reqUtils.extractor.method);
+  const urlRouter = urlRouterFactory(reqUtils.extractor.url);
   for (const [methodKey, methodValue] of middlewares) {
     if (methodRouter.match(methodKey)) {
       for (const [urlKey, urlValue] of methodValue) {
@@ -21,7 +21,6 @@ function getMiddlewares(req) {
     }
   }
   result.sort((a, b) => a.order - b.order);
-  console.log(result);
   return result.map(f => f.middleware);
 }
 
@@ -72,6 +71,7 @@ function extractURLArguments(methodFilter) {
 
 app.listen = function() {
   const server = http.createServer((req, res) => this.execute(req, res, 0));
+  
   return server.listen.apply(server, arguments);
 }
 
@@ -104,12 +104,15 @@ app.head = function() {
 }
 
 app.execute = function(req, res, index) {
-  const applyMiddlewares = getMiddlewares(req);
+  const reqUtils = requestUtils(req);
+  const resUtils = responseUtils(res);
+  if (index === 0) {
+    reqUtils.enhance.enhance();
+    resUtils.enhance.enhance();
+  }
+  const applyMiddlewares = getMiddlewares(reqUtils);
   if ((applyMiddlewares) && (applyMiddlewares[index])) {
     applyMiddlewares[index](req, res, () => this.execute(req, res, index+1));
-  }
-  else {
-    res.end();
   }
 }
 
