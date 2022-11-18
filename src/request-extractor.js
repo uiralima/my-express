@@ -10,6 +10,10 @@ class RequestExtractor {
   get url() {
     return this.req.url;
   }
+
+  get ip() {
+    return this.req.headers['x-forwarded-for'] || this.req.socket.remoteAddress;
+  }
 }
 
 export default function requestUtils(req) {

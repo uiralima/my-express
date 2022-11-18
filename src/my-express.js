@@ -21,7 +21,6 @@ function getMiddlewares(req) {
     }
   }
   result.sort((a, b) => a.order - b.order);
-  console.log(result);
   return result.map(f => f.middleware);
 }
 
