@@ -6,9 +6,6 @@ curl \
   localhost:3000
 */
 
-//TODO: Adicionar método setStatus ao response
-//TODO: Adicionar método send ao response
-
 import myExpress from "./my-express.js";
 import rateLimit from "express-rate-limit";
 
@@ -43,7 +40,7 @@ app.get("/api", (req, res, next) => {
 });
 
 app.use("/", (req, res, next) => {
-  res.write('all//\n');
+  res.status(400).send('all//\n');
   next();
 });
 
