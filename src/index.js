@@ -6,8 +6,8 @@ curl \
   localhost:3000
 */
 
-//TODO: Adicionar método status ao response
-//TODO: Adicionar método send ao response
+//OK: Adicionar método status ao response
+//OK: Adicionar método send ao response
 // return res.status(429).send("Limit error");
 import myExpress from "./my-express.js";
 
@@ -33,8 +33,7 @@ app.get("/api", (req, res, next) => {
 });
 
 app.use("/", (req, res, next) => {
-  res.status(400).send('all//\n');
-  next();
+  res.send('all//\n');
 });
 
 app.listen(PORT, () => console.log(`Running at ${PORT}`));
