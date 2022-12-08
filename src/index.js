@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 app.post("/api", (req, res, next) => {
-  res.write('post/all\n');
+  res.write('post/api\n');
   next();
 });
 
